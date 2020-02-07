@@ -1,8 +1,13 @@
-import React from 'react'
-import { kebabCase } from 'lodash'
-import Helmet from 'react-helmet'
-import { Link, graphql } from 'gatsby'
-import Layout from '../../components/Layout'
+import React from 'react';
+import kebabCase from 'lodash/kebabCase';
+import Helmet from 'react-helmet';
+import { Link, graphql } from 'gatsby';
+
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+
+import Layout from '../../components/Layout';
 
 const TagsPage = ({
   data: {
@@ -13,32 +18,27 @@ const TagsPage = ({
   },
 }) => (
   <Layout>
-    <section className="section">
-      <Helmet title={`Tags | ${title}`} />
-      <div className="container content">
-        <div className="columns">
-          <div
-            className="column is-10 is-offset-1"
-            style={{ marginBottom: '6rem' }}
-          >
-            <h1 className="title is-size-2 is-bold-light">Tags</h1>
-            <ul className="taglist">
-              {group.map(tag => (
-                <li key={tag.fieldValue}>
-                  <Link to={`/tags/${kebabCase(tag.fieldValue)}/`}>
-                    {tag.fieldValue} ({tag.totalCount})
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </div>
-    </section>
+    <Helmet title={`Tags | ${title}`} />
+    <Container>
+      <Row>
+        <Col md={10}>
+          <h1 className="h2">Tags</h1>
+          <ul className="list-inline">
+            {group.map(tag => (
+              <li key={tag.fieldValue} className="list-inline-item">
+                <Link to={`/tags/${kebabCase(tag.fieldValue)}/`}>
+                  {tag.fieldValue} ({tag.totalCount})
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </Col>
+      </Row>
+    </Container>
   </Layout>
-)
+);
 
-export default TagsPage
+export default TagsPage;
 
 export const tagPageQuery = graphql`
   query TagsQuery {
@@ -54,4 +54,4 @@ export const tagPageQuery = graphql`
       }
     }
   }
-`
+`;

@@ -1,60 +1,61 @@
-import React from 'react'
-import PropTypes from 'prop-types'
-import { Link, graphql, StaticQuery } from 'gatsby'
-import PreviewCompatibleImage from './PreviewCompatibleImage'
+import React from 'react';
+import PropTypes from 'prop-types';
+import { Link, graphql, StaticQuery } from 'gatsby';
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import Card from 'react-bootstrap/Card';
+
+import PreviewCompatibleImage from './PreviewCompatibleImage';
 
 class BlogRoll extends React.Component {
   render() {
-    const { data } = this.props
-    const { edges: posts } = data.allMarkdownRemark
+    const { data } = this.props;
+    const { edges: posts } = data.allMarkdownRemark;
 
     return (
-      <div className="columns is-multiline">
-        {posts &&
-          posts.map(({ node: post }) => (
-            <div className="is-parent column is-6" key={post.id}>
-              <article
-                className={`blog-list-item tile is-child box notification ${
-                  post.frontmatter.featuredpost ? 'is-featured' : ''
-                }`}
-              >
-                <header>
-                  {post.frontmatter.featuredimage ? (
-                    <div className="featured-thumbnail">
-                      <PreviewCompatibleImage
-                        imageInfo={{
-                          image: post.frontmatter.featuredimage,
-                          alt: `featured image thumbnail for post ${post.frontmatter.title}`,
-                        }}
-                      />
-                    </div>
-                  ) : null}
-                  <p className="post-meta">
-                    <Link
-                      className="title has-text-primary is-size-4"
-                      to={post.fields.slug}
-                    >
-                      {post.frontmatter.title}
+      <Container>
+        <Row>
+          {posts &&
+            posts.map(({ node: post, ...rest }, idx) => (
+              <>
+                <Col lg={6} key={post.id}>
+                  <Card className={`m-2 p-0 ${post.frontmatter.featuredpost ? 'is-featured' : ''}`}>
+                    <Card.Title className="p-2">
+                      <Link className="h4 text-dark text-top" to={post.fields.slug}>
+                        <Row className="p-0 m-0">
+                          {post.frontmatter.featuredimage ? (
+                            <Col md={2} className="p-0 m-0">
+                              <PreviewCompatibleImage
+                                imageInfo={{
+                                  image: post.frontmatter.featuredimage,
+                                  alt: `featured image thumbnail for post ${post.frontmatter.title}`,
+                                }}
+                              />
+                            </Col>
+                          ) : null}
+                          <Col className="p-0 m-0">{post.frontmatter.title}</Col>
+                        </Row>
+                      </Link>
+                      <Card.Subtitle className="my-2 text-muted">{post.frontmatter.date}</Card.Subtitle>
+                    </Card.Title>
+                    <Card.Text className="m-2 text-justify">{post.excerpt}</Card.Text>
+                    <Link className="btn btn-light" to={post.fields.slug}>
+                      Keep Reading →
                     </Link>
-                    <span> &bull; </span>
-                    <span className="subtitle is-size-5 is-block">
-                      {post.frontmatter.date}
-                    </span>
-                  </p>
-                </header>
-                <p>
-                  {post.excerpt}
-                  <br />
-                  <br />
-                  <Link className="button" to={post.fields.slug}>
-                    Keep Reading →
-                  </Link>
-                </p>
-              </article>
-            </div>
-          ))}
-      </div>
-    )
+                  </Card>
+                </Col>
+                {idx > 0 && idx % 3 ? (
+                  <>
+                    {/*<!-- Force next columns to break to new line at md breakpoint and up -->*/}
+                    <div className="w-100 d-none d-md-block" />
+                  </>
+                ) : null}
+              </>
+            ))}
+        </Row>
+      </Container>
+    );
   }
 }
 
@@ -64,7 +65,7 @@ BlogRoll.propTypes = {
       edges: PropTypes.array,
     }),
   }),
-}
+};
 
 export default () => (
   <StaticQuery
@@ -101,4 +102,4 @@ export default () => (
     `}
     render={(data, count) => <BlogRoll data={data} count={count} />}
   />
-)
+);
